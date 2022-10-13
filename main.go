@@ -22,8 +22,10 @@ func main() {
 		title, data = getTabletopMerchantDotd()
 
 	}
-	bggLink := getBGGInfo(title)
-	bot, err := tgbotapi.NewBotAPI("5715458728:AAHIcA3JGJiIWCq4l2NFPfbTKSDj586HmsQ")
+	//bggLink := getBGGInfo(title)
+	bggLink := "123" + title
+	token := getToken()
+	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
 		log.Panicf("failed to load bot : %v", err)
 	}
@@ -50,4 +52,13 @@ func getBGGInfo(s string) string {
 	}
 
 	return string(out)
+}
+
+func getToken() string {
+	dat, err := os.ReadFile("telegram.token")
+	if err != nil {
+		log.Panicf("can't read token!: %v", err)
+	}
+
+	return string(dat)
 }
