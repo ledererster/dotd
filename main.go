@@ -4,7 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"os"
-	"os/exec"
+	"strings"
 )
 
 func main() {
@@ -22,8 +22,8 @@ func main() {
 		title, data = getTabletopMerchantDotd()
 
 	}
-	//bggLink := getBGGInfo(title)
-	bggLink := "123" + title
+	title = strings.TrimSpace(title)
+	bggLink := searchBGG(title)
 	token := getToken()
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
@@ -41,17 +41,6 @@ func main() {
 		log.Panicf("failed to send message: %v", err)
 	}
 
-}
-
-func getBGGInfo(s string) string {
-	c := exec.Command("/home/m/dotd.py", s)
-
-	out, err := c.Output()
-	if err != nil {
-		log.Fatalf("Failed to get gamenerdz info: %v", err)
-	}
-
-	return string(out)
 }
 
 func getToken() string {
