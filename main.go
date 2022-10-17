@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -13,16 +14,26 @@ func main() {
 	}
 	store := os.Args[1]
 	var title, data string
-	switch store {
-	case "c":
-		title, data = getCardHausDeal()
-	case "g":
-		title, data = getGameNerdzDeal()
-	case "t":
-		title, data = getTabletopMerchantDotd()
+	var tries int
+	for {
+		switch store {
+		case "c":
+			title, data = getCardHausDeal()
+		case "g":
+			title, data = getGameNerdzDeal()
+		case "t":
+			title, data = getTabletopMerchantDotd()
 
+		}
+		title = strings.TrimSpace(title)
+		if diff(store, title) {
+			break
+		}
+		if tries += 1; tries > 5 {
+			log.Fatalf("too many tries. not updated")
+		}
+		time.Sleep(1 * time.Minute)
 	}
-	title = strings.TrimSpace(title)
 	bggLink := searchBGG(title)
 	token := getToken()
 	bot, err := tgbotapi.NewBotAPI(token)

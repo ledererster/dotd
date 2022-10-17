@@ -3,11 +3,13 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/anaskhan96/soup"
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -197,4 +199,21 @@ func getPrice(id string) float64 {
 	}
 
 	return result["final_price"].(float64) / 100
+}
+
+func diff(site, title string) bool {
+	dat, err := os.ReadFile("dotdData/" + site + ".dat")
+	if err != nil {
+		if !errors.Is(err, os.ErrNotExist) {
+			log.Fatalln(err)
+		}
+	}
+	if title == string(dat) {
+		return false
+	}
+	dat = []byte(title)
+	err = os.WriteFile("dotdData/"+site+".dat", dat, 0666)
+	checkErr(err)
+	return true
+
 }
